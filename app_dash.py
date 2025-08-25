@@ -17,7 +17,7 @@ st.set_page_config(
 st.title("⚖️ Dashboard PAD - Processos Administrativos Disciplinares")
 st.markdown("---")
 st.write("Bem-vindo ao Dashboard de Análise de Processos Administrativos Disciplinares (PADs).")
-st.write("Por favor, faça o upload do arquivo Excel (SAGEP_PROCESSOSPAE3(4).xlsx) para iniciar a análise.")
+st.write("Por favor, faça o upload do arquivo Excel para iniciar a análise.")
 
 # Widget de upload de arquivo
 uploaded_file = st.file_uploader("Escolha um arquivo Excel", type="xlsx")
@@ -33,7 +33,8 @@ def load_data(file):
     """Carrega e processa os dados do arquivo Excel a partir de um arquivo carregado"""
     try:
         # Lê o arquivo do objeto de upload
-        df = pd.read_excel("C:\\Users\\SEDUC\\Documents\\GitHub\\PADs-dash\\SAGEP_PROCESSOS PAE3 (4).xlsx", sheet_name="PAD")
+        # CORREÇÃO: Usar a variável 'file' que foi carregada
+        df = pd.read_excel(file, sheet_name="PAD")
 
         # Processamento de datas
         df['DATA E HORA DE ENTRADA'] = pd.to_datetime(df['DATA E HORA DE ENTRADA'], errors='coerce')
