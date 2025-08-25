@@ -33,7 +33,8 @@ def load_data(file):
     """Carrega e processa os dados do arquivo Excel a partir de um arquivo carregado"""
     try:
         # Lê o arquivo do objeto de upload
-        # CORREÇÃO: Usar a variável 'file' que foi carregada
+        # CORREÇÃO CRÍTICA: Use a variável 'file' que é o objeto do arquivo carregado
+        # NÃO use um caminho de arquivo local fixo como 'C:\\Users\\...'
         df = pd.read_excel(file, sheet_name="PAD")
 
         # Processamento de datas
