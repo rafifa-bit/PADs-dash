@@ -16,13 +16,24 @@ st.set_page_config(
 # Título principal
 st.title("⚖️ Dashboard PAD - Processos Administrativos Disciplinares")
 st.markdown("---")
+st.write("Bem-vindo ao Dashboard de Análise de Processos Administrativos Disciplinares (PADs).")
+st.write("Por favor, faça o upload do arquivo Excel (SAGEP_PROCESSOSPAE3(4).xlsx) para iniciar a análise.")
+
+# Widget de upload de arquivo
+uploaded_file = st.file_uploader("Escolha um arquivo Excel", type="xlsx")
+
+# Verifica se um arquivo foi enviado antes de prosseguir
+if uploaded_file is None:
+    st.info("Aguardando o upload do arquivo.")
+    st.stop()
 
 # Cache para carregar dados
 @st.cache_data
-def load_data():
-    """Carrega e processa os dados do arquivo Excel"""
+def load_data(file):
+    """Carrega e processa os dados do arquivo Excel a partir de um arquivo carregado"""
     try:
-        df = pd.read_excel("C:\\TRABS\\PADs\\SAGEP_PROCESSOS PAE3 (4).xlsx", sheet_name="PAD")
+        # Lê o arquivo do objeto de upload
+        df = pd.read_excel(file, sheet_name="PAD")
 
         # Processamento de datas
         df['DATA E HORA DE ENTRADA'] = pd.to_datetime(df['DATA E HORA DE ENTRADA'], errors='coerce')
@@ -38,18 +49,18 @@ def load_data():
         st.error(f"Erro ao carregar dados: {e}")
         return pd.DataFrame()
 
-# Carregar dados
-df = load_data()
+# Carregar dados usando o arquivo carregado
+df = load_data(uploaded_file)
 
 if df.empty:
-    st.error("Não foi possível carregar os dados. Verifique o arquivo.")
+    st.error("Não foi possível carregar os dados. Verifique a planilha ou o formato do arquivo.")
     st.stop()
 
 # Sidebar com filtros
 st.sidebar.header("🔍 Filtros")
 
 # Filtro por ano
-anos_disponiveis = sorted(df['ANO'].dropna().unique())
+anos_disponiveis = sorted(df['ANO'].dropna().astype(int).unique())
 if anos_disponiveis:
     ano_selecionado = st.sidebar.selectbox(
         "Selecione o Ano:",
@@ -64,7 +75,7 @@ tipos_disponiveis = df['TIPO'].dropna().unique()
 tipo_selecionado = st.sidebar.multiselect(
     "Selecione o Tipo:",
     options=tipos_disponiveis,
-    default=tipos_disponiveis
+    default=list(tipos_disponiveis)
 )
 
 # Filtro por espécie
@@ -72,7 +83,7 @@ especies_disponiveis = df['ESPÉCIE'].dropna().unique()
 especie_selecionada = st.sidebar.multiselect(
     "Selecione a Espécie:",
     options=especies_disponiveis,
-    default=especies_disponiveis[:5]  # Limitar para não sobrecarregar
+    default=list(especies_disponiveis)
 )
 
 # Filtro por assunto
@@ -80,7 +91,7 @@ assuntos_disponiveis = df['ASSUNTO'].dropna().unique()
 assunto_selecionado = st.sidebar.multiselect(
     "Selecione o Assunto:",
     options=assuntos_disponiveis,
-    default=assuntos_disponiveis[:5]  # Limitar para não sobrecarregar
+    default=list(assuntos_disponiveis)
 )
 
 # Aplicar filtros
@@ -99,6 +110,8 @@ if assunto_selecionado:
     df_filtrado = df_filtrado[df_filtrado['ASSUNTO'].isin(assunto_selecionado)]
 
 # Métricas principais
+st.markdown("---")
+st.subheader("📊 Resumo das Métricas")
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -119,7 +132,7 @@ with col4:
 
 st.markdown("---")
 
-# Layout em duas colunas
+# Layout em duas colunas para os gráficos
 col_left, col_right = st.columns(2)
 
 with col_left:
