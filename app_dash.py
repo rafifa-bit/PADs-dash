@@ -33,7 +33,7 @@ def load_data(file):
     """Carrega e processa os dados do arquivo Excel a partir de um arquivo carregado"""
     try:
         # Lê o arquivo do objeto de upload
-        df = pd.read_excel(file, sheet_name="PAD")
+        df = pd.read_excel("C:\\Users\\SEDUC\\Documents\\GitHub\\PADs-dash\\SAGEP_PROCESSOS PAE3 (4).xlsx", sheet_name="PAD")
 
         # Processamento de datas
         df['DATA E HORA DE ENTRADA'] = pd.to_datetime(df['DATA E HORA DE ENTRADA'], errors='coerce')
