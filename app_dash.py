@@ -122,7 +122,7 @@ with col1:
 
 with col2:
     processos_pendentes = len(df_filtrado[df_filtrado['STATUS'] == 'Pendente'])
-    st.metric("Erros de fluxo", processos_pendentes)
+    st.metric("Processos Pendentes", processos_pendentes)
 
 with col3:
     processos_com_decisao = len(df_filtrado[df_filtrado['DECISAO'].notna()])
